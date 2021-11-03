@@ -1,4 +1,4 @@
-export const init: (arg: ConfigArg) => Promise<MathJaxApplication>
+export const init: (arg: InitArg) => Promise<MathJaxApplication>
 
 export type TypesetArg = {
     width?: number,
@@ -28,6 +28,7 @@ type SupportedExtension =
     'ams' |
     'amscd' |
     'autoload' |
+    'base' |
     'bbox' |
     'boldsymbol' |
     'braket' |
@@ -69,15 +70,16 @@ type InitArg = {
         enableAssistiveMml?: boolean
     },
     loader: {
-        load: string[]
+        load: string[],
+        require: typeof require
     },
     tex: {
         packages?: SupportedExtension[],
         inlineMath?: [string, string][],
         displayMath?: [string, string][],
-        processEscapes: true,      // use \$ to produce a literal dollar sign
-        processEnvironments: true, // process \begin{xxx}...\end{xxx} outside math mode
-        processRefs: true,         // process \ref{...} outside of math mode
+        processEscapes?: true,      // use \$ to produce a literal dollar sign
+        processEnvironments?: true, // process \begin{xxx}...\end{xxx} outside math mode
+        processRefs?: true,         // process \ref{...} outside of math mode
         digits?: RegExp,
         tags?: 'all' | 'ams' | 'none',
         tagSide?: 'right' | 'left',
@@ -105,18 +107,30 @@ type InitArg = {
     }
 }
 
-type ConfigArg = {
-    MathJax: {
-        jax: string[],
-        extensions: string[],
-        showMathMenu: boolean,
-        showProcessingMessages: boolean,
-        messageStyle: string,
-        SVG: {
-            useGlobalCache: boolean
-        },
-        TeX: {
-            extensions: string[]
-        }
+interface MathJaxApplication {
+    startup: {
+        adaptor: LiteAdaptor
     }
+
+    tex2svgPromise(
+        tex: string,
+        opts: {
+            display: boolean,
+            em: number,
+            ex: number
+            containerWidth: number
+        }
+    ): Promise<LiteElement>
+
+    svgStylesheet(): LiteElement
+}
+
+interface LiteAdaptor {
+    outerHTML(node: LiteElement): string
+    textContent(node: LiteElement): string
+    innerHTML(node: LiteElement): string
+}
+
+interface LiteElement {
+
 }

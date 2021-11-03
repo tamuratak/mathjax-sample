@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "lib": [
             "es2017"
@@ -20,6 +19,7 @@
         "baseUrl": "./",
         "paths": {
             "mathjax": ["types/mathjax"],
+            "mathjax-full": ["types/mathjax"],
             "mathjax-node": ["types/mathjax-node"]
         },
         "typeRoots": ["./types", "./node_modules/@types"]

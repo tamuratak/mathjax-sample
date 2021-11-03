@@ -14,7 +14,9 @@
     "watch": "tsc -watch -p tsconfig.json"
   },
   "dependencies": {
-    "mathjax": "3.2.0"
+    "mathjax": "3.2.0",
+    "mathjax-full": "3.2.0",
+    "esm": "3.2.25"
   },
   "devDependencies": {
     "mathjax-node": "2.1.1",
