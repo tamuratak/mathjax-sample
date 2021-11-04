@@ -1,54 +1,53 @@
-import * as mj from 'mathjax'
+import { mathjax } from 'mathjax-full/js/mathjax';
+import { TeX } from 'mathjax-full/js/input/tex.js';
+import { SVG } from 'mathjax-full/js/output/svg.js';
+import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor.js';
+import { RegisterHTMLHandler } from 'mathjax-full/js/handlers/html.js';
+import { LiteElement } from 'mathjax-full/js/adaptors/lite/Element';
+import { MathDocument } from 'mathjax-full/js/core/MathDocument';
+import { LiteDocument } from 'mathjax-full/js/adaptors/lite/Document';
+import { LiteText } from 'mathjax-full/js/adaptors/lite/Text';
 
 //
 //  Minimal CSS needed for stand-alone image
 //
 const CSS = [
-  'svg a{fill:blue;stroke:blue}',
-  '[data-mml-node="merror"]>g{fill:red;stroke:red}',
-  '[data-mml-node="merror"]>rect[data-background]{fill:yellow;stroke:none}',
-  '[data-frame],[data-line]{stroke-width:70px;fill:none}',
-  '.mjx-dashed{stroke-dasharray:140}',
-  '.mjx-dotted{stroke-linecap:round;stroke-dasharray:0,140}',
-  'use[data-c]{stroke-width:3px}'
+    'svg a{fill:blue;stroke:blue}',
+    '[data-mml-node="merror"]>g{fill:red;stroke:red}',
+    '[data-mml-node="merror"]>rect[data-background]{fill:yellow;stroke:none}',
+    '[data-frame],[data-line]{stroke-width:70px;fill:none}',
+    '.mjx-dashed{stroke-dasharray:140}',
+    '.mjx-dotted{stroke-linecap:round;stroke-dasharray:0,140}',
+    'use[data-c]{stroke-width:3px}'
 ].join('');
 
 //
-// Load MathJax and initialize MathJax and typeset the given math
+//  Create DOM adaptor and register it for HTML documents
+//
+const adaptor = liteAdaptor();
+RegisterHTMLHandler(adaptor);
+//
+//  Create input and output jax and a document using them on the content from the HTML file
+//
+const tex = new TeX<LiteElement, LiteText, LiteDocument>({packages: ['base', 'ams']});
+const svg = new SVG<LiteElement, LiteText, LiteDocument>({fontCache: 'local'});
+const html = mathjax.document('', {InputJax: tex, OutputJax: svg}) as MathDocument<LiteElement, LiteText, LiteDocument>
+
+//
+//  Typeset the math from the command line
+//
+const node = html.convert('a+b', {
+    display: true,
+    em: 16,
+    ex: 8,
+    containerWidth: 80*16
+}) as LiteElement
+
+//
+//  If the --css option was specified, output the CSS,
+//  Otherwise, typeset the math and output the HTML
 //
 
-mj.init({
-    //
-    //  The MathJax configuration
-    //
-    options: {
-        enableAssistiveMml: false
-    },
-    loader: {
-        load: ['adaptors/liteDOM', 'tex-svg'],
-        require: require
-    },
-    tex: {
-        packages: ['base', 'autoload', 'require', 'ams', 'newcommand']
-    },
-    svg: {
-        fontCache: 'local'
-    },
-    startup: {
-        typeset: false
-    }
-}).then((MathJax) => {
-    //
-    //  Typeset and display the math
-    //
-    MathJax.tex2svgPromise('a+b', {
-        display: true,
-        em: 16,
-        ex: 8,
-        containerWidth: 80*16
-    }).then((node) => {
-        const adaptor = MathJax.startup.adaptor;
-        let html = adaptor.innerHTML(node);
-        console.log(html.replace(/<defs>/, `<defs><style>${CSS}</style>`));
-    });
-}).catch(err => console.log(err));
+const svgHtml = adaptor.innerHTML(node);
+console.log(svgHtml.replace(/<defs>/, `<defs><style>${CSS}</style>`))
+
