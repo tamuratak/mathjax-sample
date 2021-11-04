@@ -1,3 +1,13 @@
+import { mathjax } from 'mathjax-full/js/mathjax';
+import { TeX } from 'mathjax-full/js/input/tex.js';
+import { SVG } from 'mathjax-full/js/output/svg.js';
+import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor.js';
+import { RegisterHTMLHandler } from 'mathjax-full/js/handlers/html.js';
+import { LiteElement } from 'mathjax-full/js/adaptors/lite/Element';
+import { MathDocument } from 'mathjax-full/js/core/MathDocument';
+import { LiteDocument } from 'mathjax-full/js/adaptors/lite/Document';
+import { LiteText } from 'mathjax-full/js/adaptors/lite/Text';
+
 export const init: (arg: InitArg) => Promise<MathJaxApplication>
 
 export type TypesetArg = {
@@ -125,12 +135,14 @@ interface MathJaxApplication {
     svgStylesheet(): LiteElement
 }
 
-interface LiteAdaptor {
-    outerHTML(node: LiteElement): string
-    textContent(node: LiteElement): string
-    innerHTML(node: LiteElement): string
+interface MathDocumentLite extends MathDocument<LiteElement, LiteText, LiteDocument> {
+    convert(math: string, options?: OptionList): LiteElement;
 }
 
-interface LiteElement {
-
+export declare const mathjax: {
+    version: string,
+    document: (
+        document: string,
+        options: {InputJax: TeX<LiteElement, LiteText, LiteDocument>, OutputJax: SVG<LiteElement, LiteText, LiteDocument>}
+    ) => MathDocumentLite
 }

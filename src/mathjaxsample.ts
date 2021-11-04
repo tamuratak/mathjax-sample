@@ -4,7 +4,7 @@ import { SVG } from 'mathjax-full/js/output/svg.js';
 import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor.js';
 import { RegisterHTMLHandler } from 'mathjax-full/js/handlers/html.js';
 import { LiteElement } from 'mathjax-full/js/adaptors/lite/Element';
-import { MathDocument } from 'mathjax-full/js/core/MathDocument';
+// import { MathDocument } from 'mathjax-full/js/core/MathDocument';
 import { LiteDocument } from 'mathjax-full/js/adaptors/lite/Document';
 import { LiteText } from 'mathjax-full/js/adaptors/lite/Text';
 
@@ -31,7 +31,7 @@ RegisterHTMLHandler(adaptor);
 //
 const tex = new TeX<LiteElement, LiteText, LiteDocument>({packages: ['base', 'ams']});
 const svg = new SVG<LiteElement, LiteText, LiteDocument>({fontCache: 'local'});
-const html = mathjax.document('', {InputJax: tex, OutputJax: svg}) as MathDocument<LiteElement, LiteText, LiteDocument>
+const html = mathjax.document('', {InputJax: tex, OutputJax: svg})
 
 //
 //  Typeset the math from the command line
@@ -41,7 +41,7 @@ const node = html.convert('a+b', {
     em: 16,
     ex: 8,
     containerWidth: 80*16
-}) as LiteElement
+})
 
 //
 //  If the --css option was specified, output the CSS,
