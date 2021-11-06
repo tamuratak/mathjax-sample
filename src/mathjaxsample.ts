@@ -8,12 +8,10 @@ import type { LiteElement } from 'mathjax-full/js/adaptors/lite/Element';
 import type { MathDocument } from 'mathjax-full/js/core/MathDocument.js';
 import type { LiteDocument } from 'mathjax-full/js/adaptors/lite/Document.js';
 import type { LiteText } from 'mathjax-full/js/adaptors/lite/Text.js';
-import { AllPackages } from 'mathjax-full/js/input/tex/AllPackages.js';
-
-AllPackages
+import 'mathjax-full/js/input/tex/AllPackages.js';
 
 const CSS = [
-    'svg {font-size: 200%}'
+    'svg {font-size: 200%;}'
 ].join('');
 
 const adaptor = liteAdaptor();
